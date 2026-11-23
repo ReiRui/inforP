@@ -1,0 +1,21 @@
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+.env
+data/
+reports/
+profiles/
+
+# Recipient lists contain colleagues' email addresses; only the example is tracked.
+configs/recipients.yaml
+
+# Runtime artifacts: incident JSONL, Codex CLI stdout/stderr, scratch runs.
+logs/
+tmp/
+*.log
+
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/

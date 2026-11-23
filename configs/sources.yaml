@@ -1,0 +1,1048 @@
+# inforP 信源目录
+#
+# tier: T1 = 官方一手 | T1_5 = 准官方与研究 | T2 = 媒体/通讯/社交/论坛（只作线索）
+# crawl_mode: rss | web | llm_search | browser_profile；rss 优先（逐条带发布时间）
+#
+# 维护约定
+#   - 抓取失败、返回空壳（JS 渲染页）、长期无产出的源直接删除，不要留占位。
+#   - 官方页无 RSS 且打不开时，先找该站 RSS；找不到就交给 llm_search 覆盖。
+#   - 加源前实测：能取到条目、最新条目日期在合理范围内。
+#
+version: 2
+source_policy:
+  confirmation_rules:
+  - Official announcements, papers, model cards, code repositories, regulator texts, and company docs are confirmation sources.
+  - Media, newsletters, forums, WeChat public accounts, X/Twitter, YouTube, Zhihu, Xueqiu, and NGA are discovery or context sources unless independently confirmed.
+  - High-priority items need one primary source or two independent reliable sources. Otherwise label as single-source confirmed or wait-and-watch.
+  - China policy items need Chinese original text from gov.cn, ministries, regulators, or official gazettes before medium/high priority conclusions.
+  - AI low-confidence items are not pushed. General low-confidence items may enter the wait-and-watch queue with explicit missing evidence.
+  report_requirements:
+  - Use three main report boards: AI technology and product applications; AI infrastructure and hardware supply chain; policy, industrial capital, and macro/geopolitics.
+  - The example profile targets the EDA / semiconductor-IP industry. Raise importance for semiconductor EDA tools, semiconductor IP, chip design flows, verification, physical design, PDK/design rules, layout-design protection, EDA/IP licensing, export controls, litigation, M&A, and domestic-substitution signals.
+  - Major AI application breakthroughs outside ordinary AI product news are high-priority candidates. Cover AI for science and engineering, including mathematics, formal proof, physics equations, fluid dynamics, weather/climate, materials, chemistry, biology, drug discovery, robotics, simulation, optimization, control, manufacturing, compilers, software engineering, and EDA-adjacent scientific computing.
+  - When an AI system claims to solve or materially advance a recognized hard problem, report the claim and evidence if there is a primary source or reliable coverage. Separate the fact of the claim from community acceptance, reproducibility, credit disputes, and downstream impact.
+  - Keep cross-cutting labels for model, product, open source, application, AI4S, mathematics, formal proof, simulation, materials, drug discovery, weather, robotics, GPU, chip, EDA, semiconductor IP, layout design, server, networking, data center, policy, compliance, capital, China, US, geopolitics, and watchlist.
+  - Include a 30-second brief with 3-5 standalone bullets before the main sections.
+  - For each important item, separate facts from impact judgment and note both confidence levels.
+  - Add audience impact tags such as product, compliance, investment, infrastructure, talent, or macro.
+  - Use numbered sources in the email body and collect full source links at the end.
+  - On Fridays, add weekend watch and next-Monday follow-up items.
+  - End each report with coverage scope, uncovered areas, and omission risk notes.
+llm_search:
+  enabled: true
+  daily_queries:
+  - id: ai_models_products_breakthroughs
+    topic: ai_tech
+    query: 'Search the last 36 hours for important AI model, product, benchmark, developer platform, API, agent, multimodal, robotics, open-source, and research breakthroughs. Cover official sites, papers, GitHub, Hugging Face, company blogs, credible newsletters, X/Twitter posts, WeChat public-account discussions, YouTube videos/transcripts, and Chinese AI media. Prefer primary sources and translate all useful non-Chinese material into Simplified Chinese.
+
+      '
+  - id: ai_science_engineering_breakthroughs
+    topic: ai_tech
+    query: 'Search the last 36 hours for major AI application breakthroughs beyond ordinary AI product news: AI for science and engineering, mathematics, formal proof, physics equations, fluid dynamics, weather and climate, materials, chemistry, biology, drug discovery, robotics, simulation, optimization, control, manufacturing, compilers, software engineering, and EDA-adjacent scientific computing. Include claims that AI systems solved or materially advanced recognized hard problems, top-journal or top-conference results, official research posts, papers, code, datasets, model cards, and credible coverage from Nature, Science, Quanta, Scientific American, MIT Technology Review, IEEE Spectrum, and similar sources. Prefer primary sources; separate the existence of a claim from community acceptance, reproducibility, credit disputes, and impact.
+
+      '
+  - id: ai_hardware_infrastructure_supply_chain
+    topic: ai_hardware
+    query: 'Search the last 36 hours for AI hardware and infrastructure news: GPUs, AI accelerators, servers, HBM, advanced packaging, foundry capacity, EDA tools, semiconductor IP, chip design flows, verification, physical design, PDK/design rules, layout-design protection, optical modules, switches, InfiniBand/Ethernet, data centers, power, cooling, cloud capex, delivery lead times, export controls that affect compute supply or semiconductor design tools/IP, and telecom/networking infrastructure for AI. Prefer official announcements, filings, regulator texts, supply-chain disclosures, credible semiconductor reporting, and primary company sources. Also cover lithography and semiconductor equipment makers (ASML, Applied Materials, Lam Research, Tokyo Electron, KLA) and metrology/inspection when they affect leading-edge capacity.'
+  - id: ai_policy_capital_industry
+    topic: ai_industry_policy
+    query: 'Search the last 36 hours for AI regulation, data governance, copyright, public-sector AI procurement, AI investment, M&A, IPO, national AI plans, enterprise adoption, EDA/IP licensing, semiconductor IP disputes, chip-design export controls, and industry strategy. Put hardware supply chain and EDA/IP toolchain details under ai_hardware unless the main point is policy, capital, or macro impact.
+
+      '
+  - id: chinese_ai_sources_social_watch
+    topic: general_ai
+    query: 'Search Chinese AI web media, WeChat public accounts, Zhihu discussions, Bilibili/YouTube transcripts, X/Twitter, and developer communities for AI signals that may not yet appear in English search results. Treat social, forum, and public-account content as observation sources; find official confirmation before promotion.
+
+      '
+  - id: global_politics_economy
+    topic: global_politics
+    query: 'Search the last 36 hours for globally important political, geopolitical, macroeconomic, market, central-bank, sanctions, trade, supply-chain, and energy developments that a China-based technology operator should know. Prioritize official statements, central banks, multilaterals, and major wire services.
+
+      '
+  - id: china_policy_regulators
+    topic: china_policy
+    query: 'Search the last 36 hours for important Chinese central-government, ministry, regulator, financial, tax, technology, platform-economy, industrial, education, talent, and capital-market policies. For any Chinese policy conclusion, locate Chinese original text from official sources whenever possible.
+
+      '
+  - id: market_watch_observation
+    topic: market_watch
+    query: 'Search market-watch sources, including official exchange notices, broker research summaries, reliable financial media, Xueqiu, and authorized forum observation sources such as NGA stock discussions. Forum and community content must stay in wait-and-watch unless confirmed by market data, filings, official notices, or credible financial media.
+
+      '
+  weekly_queries:
+  - id: weekly_ai_mainline
+    topic: ai_tech
+    query: 'Summarize the most important AI technology, model, product, application, open-source, and research developments from the previous calendar week, including weekend items not pushed in daily reports. Highlight mainlines, reversals, and follow-up questions.
+
+      '
+  - id: weekly_ai_science_engineering_mainline
+    topic: ai_tech
+    query: 'Summarize the most important AI application breakthroughs from the previous calendar week outside ordinary AI product news, especially AI for science and engineering: mathematics, formal proof, physics, fluid dynamics, weather/climate, materials, chemistry, biology, drug discovery, robotics, simulation, optimization, control, manufacturing, compilers, software engineering, and EDA-adjacent scientific computing. Flag recognized-hard-problem claims and separate confirmed facts from community acceptance, reproducibility, credit disputes, and impact.
+
+      '
+  - id: weekly_ai_hardware_mainline
+    topic: ai_hardware
+    query: 'Summarize the most important AI hardware, GPU, accelerator, server, HBM, advanced packaging, foundry, EDA tools, semiconductor IP, verification, physical design, PDK/design rules, layout-design protection, optical communication, networking, data-center, power, cooling, cloud capex, and major supplier governance developments from the previous calendar week. Always check NVIDIA official newsroom and investor releases for CEO/board changes, investigations, earnings, capital allocation, supply commitments, and AI-factory roadmap changes. Focus on supply-demand changes, toolchain availability, licensing risk, export controls, leadership continuity, and constraints.
+
+      '
+  - id: weekly_global_mainline
+    topic: global_politics
+    query: 'Summarize the most important global politics, macroeconomics, markets, China policy, geopolitics, trade, energy, and AI-adjacent policy developments from the previous calendar week, including weekend items.
+
+      '
+  - id: weekly_waitlist_followup
+    topic: other
+    query: 'Revisit last week''s wait-and-watch queue. For each tracked lead, report whether it was confirmed, corrected, disproven, still pending, or no longer important. Prefer source updates and official confirmations.
+
+      '
+sources:
+- id: openai_news
+  name: OpenAI News
+  url: https://openai.com/news/rss.xml
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.95
+  crawl_mode: rss
+  observe_enabled: true
+  notes: 'RSS feed preferred over the list page: per-item granularity and item dates.'
+  tier: T1
+- id: anthropic_news
+  name: Anthropic News
+  url: https://www.anthropic.com/news
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.95
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: anthropic_research
+  name: Anthropic Research
+  url: https://www.anthropic.com/research
+  kind: official
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: google_deepmind_blog
+  name: Google DeepMind Blog
+  url: https://deepmind.google/blog/rss.xml
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.95
+  crawl_mode: rss
+  observe_enabled: true
+  notes: 'RSS feed preferred over the list page: per-item granularity and item dates.'
+  tier: T1
+- id: meta_technology_news
+  name: Meta Technology News
+  url: https://about.fb.com/news/category/technologies/meta/
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: microsoft_ai_blog
+  name: Microsoft AI Blog
+  url: https://microsoft.ai/blog/
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: microsoft_azure_ai_blog
+  name: Microsoft Azure AI Blog
+  url: https://azure.microsoft.com/en-us/blog/tag/ai/
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_hardware
+  - ai_industry_policy
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: nvidia_newsroom
+  name: NVIDIA Newsroom
+  url: https://nvidianews.nvidia.com/rss.xml
+  kind: official
+  topic_hints:
+  - ai_hardware
+  - ai_industry_policy
+  reliability_score: 0.9
+  crawl_mode: rss
+  observe_enabled: true
+  notes: 'RSS feed preferred over the list page: per-item granularity and item dates.'
+  tier: T1
+- id: amd_newsroom
+  name: AMD Newsroom
+  url: https://www.amd.com/en/newsroom.html
+  kind: official
+  topic_hints:
+  - ai_hardware
+  - ai_tech
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: intel_newsroom
+  name: Intel Newsroom
+  url: https://www.intel.com/content/www/us/en/newsroom/home.html
+  kind: official
+  topic_hints:
+  - ai_hardware
+  - ai_industry_policy
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: sk_hynix_newsroom
+  name: SK hynix Newsroom
+  url: https://news.skhynix.com/
+  kind: official
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: samsung_semiconductor_newsroom
+  name: Samsung Semiconductor Newsroom
+  url: https://semiconductor.samsung.com/newsroom/
+  kind: official
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: marvell_newsroom
+  name: Marvell Newsroom
+  url: https://www.marvell.com/company/newsroom.html
+  kind: official
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.8
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: supermicro_news
+  name: Supermicro News
+  url: https://www.supermicro.com/en/news
+  kind: official
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.8
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: arista_press_releases
+  name: Arista Networks Press Releases
+  url: https://www.arista.com/en/company/news/press-release
+  kind: official
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.8
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: dell_ai_blog
+  name: Dell AI Blog
+  url: https://www.dell.com/en-us/blog/categories/artificial-intelligence/
+  kind: official
+  topic_hints:
+  - ai_hardware
+  - ai_industry_policy
+  reliability_score: 0.75
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: hpe_newsroom
+  name: HPE Newsroom
+  url: https://www.hpe.com/us/en/newsroom.html
+  kind: official
+  topic_hints:
+  - ai_hardware
+  - ai_industry_policy
+  reliability_score: 0.75
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: cisco_ai_newsroom
+  name: Cisco AI Newsroom
+  url: https://newsroom.cisco.com/c/r/newsroom/en/us/artificial-intelligence.html
+  kind: official
+  topic_hints:
+  - ai_hardware
+  - ai_industry_policy
+  reliability_score: 0.75
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: open_compute_project_blog
+  name: Open Compute Project Blog
+  url: https://www.opencompute.org/blog
+  kind: official
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1_5
+- id: alibaba_ai_news
+  name: Alibaba Group AI News
+  url: https://www.alibabagroup.com/en-US/document?topic=ai
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_hardware
+  - ai_industry_policy
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: minimax_blog
+  name: MiniMax Blog
+  url: https://www.minimax.io/blog
+  kind: official
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: minimax_cn_blog
+  name: MiniMax 中文博客
+  url: https://www.minimaxi.com/blog
+  kind: official
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.8
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: zhipu_news
+  name: 智谱 AI 新闻
+  url: https://www.zhipuai.cn/zh/news
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: stepfun_platform
+  name: 阶跃星辰开放平台
+  url: https://platform.stepfun.ai/
+  kind: official
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.8
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: arxiv_ai
+  name: arXiv Artificial Intelligence
+  url: https://export.arxiv.org/rss/cs.AI
+  kind: paper
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+- id: arxiv_cl
+  name: arXiv Computation and Language
+  url: https://export.arxiv.org/rss/cs.CL
+  kind: paper
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+- id: arxiv_lg
+  name: arXiv Machine Learning
+  url: https://export.arxiv.org/rss/cs.LG
+  kind: paper
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+- id: nature_news_ai
+  name: Nature News AI
+  url: https://www.nature.com/subjects/machine-learning
+  kind: media
+  topic_hints:
+  - ai_tech
+  - general_ai
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  notes: 'Use for science and AI4S context and independent coverage. Confirm decisive technical claims with the paper, official research post, code, data, or formal proof when available.
+
+    '
+  tier: T1_5
+- id: quanta_ai
+  name: Quanta Magazine AI
+  url: https://www.quantamagazine.org/tag/artificial-intelligence/
+  kind: media
+  topic_hints:
+  - ai_tech
+  - general_ai
+  reliability_score: 0.82
+  crawl_mode: web
+  observe_enabled: true
+  notes: 'Strong for mathematics, theoretical computer science, and scientific context. Use as independent coverage and find primary sources before upgrading hard-problem claims.
+
+    '
+  tier: T2
+- id: scientific_american_ai
+  name: Scientific American AI
+  url: https://www.scientificamerican.com/artificial-intelligence/
+  kind: media
+  topic_hints:
+  - ai_tech
+  - general_ai
+  reliability_score: 0.78
+  crawl_mode: web
+  observe_enabled: true
+  notes: Use for science communication and public context; confirm important claims with primary sources.
+  tier: T2
+- id: ieee_spectrum_ai
+  name: IEEE Spectrum AI
+  url: https://spectrum.ieee.org/artificial-intelligence
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_hardware
+  - general_ai
+  reliability_score: 0.78
+  crawl_mode: web
+  observe_enabled: true
+  notes: Useful for robotics, engineering AI, chips, and applied AI systems; confirm with primary technical sources.
+  tier: T2
+- id: deeplearning_ai_batch
+  name: The Batch by DeepLearning.AI
+  url: https://www.deeplearning.ai/the-batch
+  kind: newsletter
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.75
+  crawl_mode: web
+  observe_enabled: true
+  notes: 'Use as synthesis and discovery. Confirm important facts with original announcements, papers, code, or official documents.
+
+    '
+  tier: T2
+- id: latent_space
+  name: Latent Space
+  url: https://www.latent.space/feed
+  kind: newsletter
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.7
+  crawl_mode: rss
+  observe_enabled: true
+  notes: 'RSS feed preferred over the list page: per-item granularity and item dates.'
+  tier: T2
+- id: qbitai
+  name: 量子位
+  url: https://www.qbitai.com/feed
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.68
+  crawl_mode: rss
+  observe_enabled: true
+  notes: 'RSS feed preferred over the list page: per-item granularity and item dates.'
+  tier: T2
+- id: latepost
+  name: 晚点 LatePost
+  url: https://www.latepost.com/
+  kind: media
+  topic_hints:
+  - ai_industry_policy
+  - economy
+  reliability_score: 0.7
+  crawl_mode: llm_search
+  observe_enabled: true
+  notes: 'Useful for China technology business and capital signals. Confirm with company announcements, filings, or additional reliable reporting.
+
+    '
+  tier: T2
+- id: state_council_cn
+  name: 中国政府网政策
+  url: https://www.gov.cn/zhengce/
+  kind: official
+  topic_hints:
+  - china_policy
+  reliability_score: 0.95
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: state_council_en
+  name: State Council English Policy Releases
+  url: https://english.www.gov.cn/policies/latestreleases
+  kind: official
+  topic_hints:
+  - china_policy
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: ndrc
+  name: 国家发展改革委
+  url: https://www.ndrc.gov.cn/
+  kind: official
+  topic_hints:
+  - china_policy
+  - economy
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: miit
+  name: 工业和信息化部
+  url: https://www.miit.gov.cn/
+  kind: official
+  topic_hints:
+  - china_policy
+  - ai_industry_policy
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: cac
+  name: 国家互联网信息办公室
+  url: https://www.cac.gov.cn/
+  kind: official
+  topic_hints:
+  - china_policy
+  - ai_industry_policy
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: pboc
+  name: 中国人民银行
+  url: http://www.pbc.gov.cn/
+  kind: official
+  topic_hints:
+  - economy
+  - china_policy
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: csrc
+  name: 中国证监会
+  url: http://www.csrc.gov.cn/
+  kind: official
+  topic_hints:
+  - economy
+  - china_policy
+  - market_watch
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: eu_ai_act
+  name: European Commission AI Act
+  url: https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai
+  kind: official
+  topic_hints:
+  - ai_industry_policy
+  - global_politics
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: white_house_ai
+  name: White House AI Briefing Room
+  url: https://www.whitehouse.gov/briefing-room/
+  kind: official
+  topic_hints:
+  - ai_industry_policy
+  - global_politics
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: bis
+  name: Bank for International Settlements
+  url: https://www.bis.org/
+  kind: official
+  topic_hints:
+  - economy
+  reliability_score: 0.9
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: world_bank
+  name: World Bank News
+  url: https://www.worldbank.org/en/news
+  kind: official
+  topic_hints:
+  - economy
+  - global_politics
+  reliability_score: 0.85
+  crawl_mode: web
+  observe_enabled: true
+  tier: T1
+- id: x_openai
+  name: OpenAI on X
+  url: https://x.com/OpenAI
+  kind: social
+  topic_hints:
+  - ai_tech
+  - general_ai
+  reliability_score: 0.75
+  crawl_mode: llm_search
+  observe_enabled: true
+  notes: Official social account; use for early signals and link back to official announcements.
+  tier: T2
+- id: x_anthropic
+  name: Anthropic on X
+  url: https://x.com/AnthropicAI
+  kind: social
+  topic_hints:
+  - ai_tech
+  - general_ai
+  reliability_score: 0.75
+  crawl_mode: llm_search
+  observe_enabled: true
+  tier: T2
+- id: x_google_deepmind
+  name: Google DeepMind on X
+  url: https://x.com/GoogleDeepMind
+  kind: social
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: llm_search
+  observe_enabled: true
+  tier: T2
+- id: x_mistral_ai
+  name: Mistral AI on X
+  url: https://x.com/MistralAI
+  kind: social
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: llm_search
+  observe_enabled: true
+  tier: T2
+- id: x_huggingface
+  name: Hugging Face on X
+  url: https://x.com/huggingface
+  kind: social
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.7
+  crawl_mode: llm_search
+  observe_enabled: true
+  tier: T2
+- id: x_qwen
+  name: Qwen on X
+  url: https://x.com/Alibaba_Qwen
+  kind: social
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.65
+  crawl_mode: llm_search
+  observe_enabled: true
+  notes: Remote search only; confirm handle identity and official links before using as a fact source.
+  tier: T2
+- id: wechat_jiqizhixin
+  name: 机器之心微信公众号
+  url: wechat://机器之心
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.65
+  crawl_mode: llm_search
+  observe_enabled: true
+  metadata:
+    platform: wechat
+    wechat_name: 机器之心
+  notes: Public-account source. Use remote search/manual links for discovery; confirm externally.
+  tier: T2
+- id: wechat_qbitai
+  name: 量子位微信公众号
+  url: wechat://量子位
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.63
+  crawl_mode: llm_search
+  observe_enabled: true
+  metadata:
+    platform: wechat
+    wechat_name: 量子位
+  tier: T2
+- id: wechat_xinzhiyuan
+  name: 新智元微信公众号
+  url: wechat://新智元
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.58
+  crawl_mode: llm_search
+  observe_enabled: true
+  metadata:
+    platform: wechat
+    wechat_name: 新智元
+  tier: T2
+- id: wechat_ai_tech_review
+  name: AI 科技评论微信公众号
+  url: wechat://AI科技评论
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.6
+  crawl_mode: llm_search
+  observe_enabled: true
+  metadata:
+    platform: wechat
+    wechat_name: AI科技评论
+  tier: T2
+- id: wechat_latepost
+  name: 晚点 LatePost 微信公众号
+  url: wechat://晚点LatePost
+  kind: media
+  topic_hints:
+  - ai_industry_policy
+  - economy
+  reliability_score: 0.68
+  crawl_mode: llm_search
+  observe_enabled: true
+  metadata:
+    platform: wechat
+    wechat_name: 晚点LatePost
+  tier: T2
+- id: wechat_founder_park
+  name: Founder Park 微信公众号
+  url: wechat://FounderPark
+  kind: media
+  topic_hints:
+  - ai_industry_policy
+  - general_ai
+  reliability_score: 0.58
+  crawl_mode: llm_search
+  observe_enabled: true
+  metadata:
+    platform: wechat
+    wechat_name: FounderPark
+  tier: T2
+- id: wechat_siliconstar
+  name: 硅星人 Pro 微信公众号
+  url: wechat://硅星人Pro
+  kind: media
+  topic_hints:
+  - ai_industry_policy
+  - general_ai
+  reliability_score: 0.56
+  crawl_mode: llm_search
+  observe_enabled: true
+  metadata:
+    platform: wechat
+    wechat_name: 硅星人Pro
+  tier: T2
+- id: zhihu_ai_watch
+  name: 知乎 AI 观察
+  url: https://www.zhihu.com/
+  kind: forum
+  topic_hints:
+  - general_ai
+  reliability_score: 0.4
+  crawl_mode: llm_search
+  observe_enabled: true
+  notes: 'Use only as an observation source for expert discussion and early signals. Do not treat as confirmed fact without primary-source support.
+
+    '
+  tier: T2
+- id: xueqiu_market_watch
+  name: 雪球市场观察
+  url: https://xueqiu.com/
+  kind: social
+  topic_hints:
+  - market_watch
+  reliability_score: 0.4
+  crawl_mode: llm_search
+  observe_enabled: true
+  notes: Market sentiment and lead discovery only.
+  tier: T2
+- id: nga_stock_watch
+  name: NGA 股市相关讨论观察源
+  url: https://bbs.nga.cn/
+  kind: forum
+  topic_hints:
+  - market_watch
+  reliability_score: 0.35
+  crawl_mode: browser_profile
+  observe_enabled: false
+  notes: 'Disabled by default. Enable only with user-authorized login state and when platform rules allow access. Community discussion is never a confirmation source by itself.
+
+    '
+  tier: T2
+- id: arm_newsroom_rss
+  name: Arm Newsroom
+  url: https://newsroom.arm.com/rss
+  kind: official
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.85
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1
+  notes: Arm IP licensing and architecture announcements.
+- id: meta_engineering_rss
+  name: Meta Engineering
+  url: https://engineering.fb.com/feed/
+  kind: official
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.8
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+  notes: Replaces ai.meta.com, which is unreachable from this host; covers Meta AI infrastructure and research posts.
+- id: aws_ml_rss
+  name: AWS Machine Learning Blog
+  url: https://aws.amazon.com/blogs/machine-learning/feed/
+  kind: official
+  topic_hints:
+  - ai_tech
+  - ai_hardware
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+  notes: Vendor engineering blog; useful for training/inference stack signals.
+- id: github_blog_ai_rss
+  name: GitHub Blog - AI & ML
+  url: https://github.blog/ai-and-ml/feed/
+  kind: official
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+  notes: Platform-level signals on agent and coding-model adoption.
+- id: semiengineering_rss
+  name: Semiconductor Engineering
+  url: https://semiengineering.com/feed/
+  kind: media
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: EDA, verification, packaging and design-flow coverage; core to the EDA/IP beat.
+- id: bair_rss
+  name: Berkeley AI Research
+  url: https://bair.berkeley.edu/blog/feed.xml
+  kind: paper
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.8
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+  notes: Research blog; treat as research commentary rather than peer review.
+- id: science_news_rss
+  name: Science News
+  url: https://www.science.org/rss/news_current.xml
+  kind: media
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.8
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T1_5
+  notes: RSS works where the HTML topic page returns 403.
+- id: mit_tech_review_ai
+  name: MIT Technology Review - AI
+  url: https://www.technologyreview.com/topic/artificial-intelligence/feed
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.8
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Editorial analysis; confirm facts with primary sources.
+- id: the_verge_ai_rss
+  name: The Verge - AI
+  url: https://www.theverge.com/rss/ai-artificial-intelligence/index.xml
+  kind: media
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Product and platform news; discovery source.
+- id: techcrunch_ai_rss
+  name: TechCrunch - AI
+  url: https://techcrunch.com/category/artificial-intelligence/feed/
+  kind: media
+  topic_hints:
+  - ai_industry_policy
+  - ai_tech
+  reliability_score: 0.72
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Funding and startup signals; RSS works where the HTML category page returns 403.
+- id: ars_technology_lab_rss
+  name: Ars Technica
+  url: https://feeds.arstechnica.com/arstechnica/technology-lab
+  kind: media
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Technical reporting; often early on platform and chip stories.
+- id: wired_ai_rss
+  name: WIRED - AI
+  url: https://www.wired.com/feed/tag/ai/latest/rss
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_industry_policy
+  reliability_score: 0.72
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Magazine reporting; discovery source.
+- id: tomshardware_rss
+  name: Tom's Hardware
+  url: https://www.tomshardware.com/feeds/all
+  kind: media
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.7
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Hardware specifications and supply-chain breadcrumbs.
+- id: servethehome_rss
+  name: ServeTheHome
+  url: https://www.servethehome.com/feed/
+  kind: media
+  topic_hints:
+  - ai_hardware
+  reliability_score: 0.7
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Server, networking and data-center hardware.
+- id: hn_frontpage_rss
+  name: Hacker News Front Page
+  url: https://hnrss.org/frontpage
+  kind: forum
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.55
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Community signal only; never a confirmation source.
+- id: simon_willison_rss
+  name: Simon Willison's Weblog
+  url: https://simonwillison.net/atom/everything/
+  kind: newsletter
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.75
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Practitioner notes on LLM tooling; opinionated but usually links primary material.
+- id: interconnects_rss
+  name: Interconnects (Nathan Lambert)
+  url: https://www.interconnects.ai/feed
+  kind: newsletter
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.7
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Analysis of open models and post-training; analysis, not confirmation.
+- id: one_useful_thing_rss
+  name: One Useful Thing (Ethan Mollick)
+  url: https://www.oneusefulthing.org/feed
+  kind: newsletter
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.7
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: Applied-AI analysis; useful framing, confirm facts elsewhere.
+- id: infoq_cn_ai_rss
+  name: InfoQ 中文 - AI
+  url: https://www.infoq.cn/feed/ai
+  kind: media
+  topic_hints:
+  - ai_tech
+  reliability_score: 0.7
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: 中文技术媒体，偏工程实践与架构。
+- id: solidot_rss
+  name: Solidot
+  url: https://www.solidot.org/index.rss
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_hardware
+  reliability_score: 0.68
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: 中文科技快讯，作为线索源，需回溯原文。
+- id: leiphone_rss
+  name: 雷锋网
+  url: https://www.leiphone.com/feed
+  kind: media
+  topic_hints:
+  - ai_tech
+  - ai_hardware
+  reliability_score: 0.66
+  crawl_mode: rss
+  observe_enabled: true
+  tier: T2
+  notes: 中文科技媒体，覆盖 AI 与智能硬件。

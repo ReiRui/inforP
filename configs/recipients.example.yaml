@@ -1,0 +1,33 @@
+version: 1
+
+# 收件人配置示例。
+# 复制为 configs/recipients.yaml 后填入真实地址；recipients.yaml 已被 .gitignore 忽略，
+# 不会进入版本库，避免同事邮箱外泄。
+#
+#   Copy-Item configs\recipients.example.yaml configs\recipients.yaml
+#
+# 两个集合的分工不要混用：
+#   test_only          —— 只放自己的地址，测试邮件只发这里
+#   company_colleagues —— 正式日报/周报收件人，不要用于测试或重复发送
+
+recipient_sets:
+  test_only:
+    name: 测试邮件组
+    description: 仅用于测试邮件链路；测试邮件只发给本人，不发给其他同事。
+    recipients:
+      - email: you@example.com
+        name: you
+        active: true
+        notes: 测试收件人；可重复接收测试邮件。
+  company_colleagues:
+    name: 公司同事情报邮件组
+    description: 用于给公司同事群发正式 inforP 日报和周报；不要用于测试或重复发送，除非用户明确要求补发。
+    recipients:
+      - email: colleague-a@example.com
+        name: colleague-a
+        active: true
+        notes: 正式收件人；测试邮件请改用 test_only。
+      - email: colleague-b@example.com
+        name: colleague-b
+        active: true
+        notes: 正式收件人；不要发送测试邮件或重复邮件。
