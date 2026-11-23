@@ -1,10 +1,10 @@
-# inforP Agent Notes
+﻿# inforP Agent Notes
 
 - User-facing messages for this project must be Simplified Chinese.
 - The LLM layer uses the DeepSeek official API (`https://api.deepseek.com`) with `DEEPSEEK_API_KEY` from the project `.env`. Do not re-add OpenAI credentials, local proxies, or `OPENAI_BASE_URL` indirection.
 - DeepSeek `deepseek_web_search` / `deepseek_read_url` cannot be combined with `text.format` JSON schema (HTTP 400). Keep retrieval in the Search API and structured output in a tool-free call.
 - DeepSeek search does not index X/Twitter, Reddit, Telegram, or Discord (`site:` filters return empty or unrelated results). Treat those channels as uncovered: use fixed sources or manual input, and never claim coverage for them.
-- For inaccessible or cross-border research, use Codex/LLM remote search and keep source verification strict.
+- For inaccessible or cross-border research, use remote LLM search and keep source verification strict.
 - Use configs/sources.yaml source tiers: official, paper, media, newsletter, social, forum.
 - High-priority items need a primary source or two reliable independent sources. Otherwise mark them as watchlist leads.
 - Prefer Chinese original texts for China policy items.

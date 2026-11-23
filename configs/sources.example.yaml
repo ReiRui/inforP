@@ -9,6 +9,16 @@
 #   - 加源前实测：能取到条目、最新条目日期在合理范围内。
 #
 version: 2
+
+# 关注方向：驱动抽取提示词里的重要性加权，改这里不需要改代码。
+# 下面只是示例值，请替换成你自己的行业与关注方向。
+profile:
+  focus_label: 示例行业（请替换）
+  focus_directions:
+    - 示例方向一
+    - 示例方向二
+    - 供应链与合规相关议题
+
 source_policy:
   confirmation_rules:
   - Official announcements, papers, model cards, code repositories, regulator texts, and company docs are confirmation sources.

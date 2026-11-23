@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 
@@ -19,7 +19,7 @@ def test_record_incident_writes_jsonl_and_database(tmp_path):
     incident = build_incident(
         title="自动化线程失败",
         detail="Invalid Value: input.call_id",
-        component="codex.automation",
+        component="automation.pipeline",
         severity=IncidentSeverity.ERROR,
         status=IncidentStatus.MITIGATED,
         detected_by="test",

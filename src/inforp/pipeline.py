@@ -42,6 +42,7 @@ class IntelligencePipeline:
         started_at = datetime.now(timezone.utc)
         metrics = RunMetrics(run_id=uuid4().hex, kind=kind, started_at=started_at)
         source_config = load_source_config(self.settings.sources_file)
+        self.research.set_profile(source_config.profile)
         self.store.upsert_sources(source_config.sources)
 
         context = CollectionContext(started_at=started_at, report_kind=kind.value)

@@ -16,6 +16,8 @@
 
 > **关于示例配置**：仓库里的信源、关注方向和报告模板是可复制的示例。其中 EDA / 半导体 IP 只是用来演示「如何按行业定制选题权重」的一个示例方向，与任何具体公司无关；换成你自己的行业即可。
 
+许可证：[MIT](LICENSE)。
+
 ## 文档
 
 - [PRD](docs/PRD.md)
@@ -71,10 +73,10 @@ API Key 只写在项目根目录的 `.env` 里（该文件已被 `.gitignore` �
 推送渠道可以按需启用：
 
 ```env
-DELIVERY_CHANNELS=codex_file,email,wecom
+DELIVERY_CHANNELS=local_file,email,wecom
 ```
 
-> `codex_file` 是历史命名，实际含义是「把报告写成 `reports/` 下的本地 Markdown 文件」，不涉及任何外部服务。
+> `local_file` 表示把报告写成 `reports/` 下的本地 Markdown 文件，不涉及任何外部服务。
 
 ```env
 WECOM_WEBHOOK_URL=...
@@ -137,6 +139,23 @@ LLM 层已从 OpenAI 切换到 DeepSeek 官方 API（`https://api.deepseek.com`�
 
 检索能力边界（2026-11 实测）：GitHub、Hacker News、arXiv、Reuters、知乎、微博、微信公众号、B 站可检索；**X/Twitter、Reddit、Telegram、Discord 检索不到**，`site:x.com` 之类的过滤返回空或无关结果。相关信息只能靠固定源或人工补入。
 
+## 关注方向（可配置）
+
+代码里不写死任何行业。`configs/sources.yaml` 顶部的 `profile` 决定「哪些议题要加权」：
+
+```yaml
+profile:
+  focus_label: 示例行业（请替换）
+  focus_directions:
+    - 示例方向一
+    - 示例方向二
+```
+
+- `focus_label`：行业名，只用于提示词表述。
+- `focus_directions`：关注方向列表，会被注入抽取提示词，作为提高重要性权重的依据。
+
+改这里就能把同一套引擎指向另一个行业，不需要动 Python。仓库自带的示例值只是占位，**请替换成你自己关心的方向**。
+
 ## 信源维护
 
 信源在 `configs/sources.yaml`，每个源带 `tier`：
@@ -163,7 +182,7 @@ LLM 层已从 OpenAI 切换到 DeepSeek 官方 API（`https://api.deepseek.com`�
 WECOM_WEEKLY_SUMMARY_ENABLED=false
 ```
 
-原因：企微周报摘要由 `WECOM_WEEKLY_SUMMARY_ENABLED` 单独控制，**不受 `DELIVERY_CHANNELS` 约束**。只改 `DELIVERY_CHANNELS=codex_file` 仍会在周报生成完成后自动发一条企微群消息。
+原因：企微周报摘要由 `WECOM_WEEKLY_SUMMARY_ENABLED` 单独控制，**不受 `DELIVERY_CHANNELS` 约束**。只改 `DELIVERY_CHANNELS=local_file` 仍会在周报生成完成后自动发一条企微群消息。
 
 另外，企微 webhook 消息发出后**无法撤回**，测试前务必确认这行已关。
 

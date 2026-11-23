@@ -1,4 +1,4 @@
-# inforP 技术架构
+﻿# inforP 技术架构
 
 ## 1. 总体架构
 
@@ -60,7 +60,7 @@ src/inforp/
   collectors/
     base.py
     rss.py
-    web.py
+    llm_search.py
     browser_profile.py
 ```
 
@@ -240,7 +240,7 @@ score =
 
 V1 支持：
 
-- `codex_file`：写入 `reports/`。
+- `local_file`：写入 `reports/`。
 - `email`：SMTP 邮件。
 - `wecom`：企业微信机器人 webhook。
 

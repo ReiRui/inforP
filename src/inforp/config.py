@@ -47,7 +47,7 @@ class Settings(BaseSettings):
     collect_lookback_hours: int = Field(default=48, alias="COLLECT_LOOKBACK_HOURS")
     collect_max_items_per_source: int = Field(default=20, alias="COLLECT_MAX_ITEMS_PER_SOURCE")
 
-    delivery_channels: str = Field(default="codex_file", alias="DELIVERY_CHANNELS")
+    delivery_channels: str = Field(default="local_file", alias="DELIVERY_CHANNELS")
     wecom_webhook_url: str | None = Field(default=None, alias="WECOM_WEBHOOK_URL")
     wecom_weekly_summary_enabled: bool = Field(default=False, alias="WECOM_WEEKLY_SUMMARY_ENABLED")
     wecom_weekly_summary_top_items: int = Field(default=10, alias="WECOM_WEEKLY_SUMMARY_TOP_ITEMS")
@@ -85,6 +85,24 @@ class SourceConfig:
         self.llm_enabled = bool(llm_search.get("enabled", True))
         self.daily_queries = [SearchQuery.model_validate(item) for item in llm_search.get("daily_queries", [])]
         self.weekly_queries = [SearchQuery.model_validate(item) for item in llm_search.get("weekly_queries", [])]
+        self.profile = self._read_profile()
+
+    def _read_profile(self) -> dict[str, Any]:
+        """Operator-configured focus, kept out of the code.
+
+        ``focus_label`` / ``focus_directions`` drive the extraction prompt, so the same
+        engine can be pointed at any industry without editing Python.
+        """
+        profile = self.raw.get("profile") or {}
+        if not isinstance(profile, dict):
+            raise ValueError(f"Source config 'profile' must be a mapping: {self.path}")
+        directions = profile.get("focus_directions") or []
+        if not isinstance(directions, list):
+            raise ValueError(f"Source config 'profile.focus_directions' must be a list: {self.path}")
+        return {
+            "focus_label": str(profile.get("focus_label") or "").strip(),
+            "focus_directions": [str(item).strip() for item in directions if str(item).strip()],
+        }
 
     @staticmethod
     def _resolve_path(path: Path) -> Path:

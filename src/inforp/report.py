@@ -269,7 +269,7 @@ def _build_coverage_body(kind: ReportKind, generated_at: datetime, metadata: dic
     window = metadata.get("search_window") or ("过去一个自然周" if kind == ReportKind.WEEKLY else "最近 36 小时")
     source_pool = metadata.get(
         "source_pool",
-        "sources.yaml 中的 official、paper、media、newsletter、social、forum 分层信源，以及启用时的 Codex/LLM 远程搜索。",
+        "sources.yaml 中的 official、paper、media、newsletter、social、forum 分层信源，以及启用时的 LLM 远程检索。",
     )
     weak_coverage = metadata.get(
         "weak_coverage",

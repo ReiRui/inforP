@@ -1,4 +1,4 @@
-.venv/
+﻿.venv/
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -11,7 +11,7 @@ profiles/
 # Recipient lists contain colleagues' email addresses; only the example is tracked.
 configs/recipients.yaml
 
-# Runtime artifacts: incident JSONL, Codex CLI stdout/stderr, scratch runs.
+# Runtime artifacts: incident JSONL, task stdout/stderr, scratch runs.
 logs/
 tmp/
 *.log

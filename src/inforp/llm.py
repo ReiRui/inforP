@@ -70,6 +70,12 @@ class ResearchResult:
 
 
 class ResearchClient:
+    profile: dict[str, Any] | None = None
+
+    def set_profile(self, profile: dict[str, Any] | None) -> None:
+        """Attach the operator-configured focus (from sources.yaml `profile`)."""
+        self.profile = profile or {}
+
     def collect_and_extract(self, queries: list[SearchQuery], report_kind: str) -> ResearchResult:
         raise NotImplementedError
 
@@ -438,14 +444,37 @@ class DeepSeekResearchClient(ResearchClient):
         return ResearchResult(events=batch.events, raw_items=[], token_usage=usage)
 
     # -- helpers ---------------------------------------------------------
-    @staticmethod
-    def _extraction_rules() -> list[str]:
+    def _focus_rule(self) -> str:
+        """Build the industry rule from config instead of hardcoding one.
+
+        The operator sets `profile.focus_label` and `profile.focus_directions` in
+        `configs/sources.yaml`; nothing about a particular industry lives in the code.
+        """
+        profile = self.profile or {}
+        label = str(profile.get("focus_label") or "").strip()
+        directions = [str(item).strip() for item in (profile.get("focus_directions") or []) if str(item).strip()]
+        if not directions:
+            return (
+                "Raise importance for the operator's configured focus areas while preserving "
+                "the same verification threshold; do not lower the verification bar for them."
+            )
+        focus = "; ".join(directions)
+        if label:
+            return (
+                f"Operator-configured focus industry: {label}. Raise importance for {focus} "
+                "while preserving the same verification threshold."
+            )
+        return (
+            f"Raise importance for {focus} while preserving the same verification threshold."
+        )
+
+    def _extraction_rules(self) -> list[str]:
         return [
             "Write every title, summary, claim, tag, and verification note in Simplified Chinese.",
             "Translate English source material into Chinese. Keep proper nouns and model names unchanged when appropriate.",
             "Each event summary must be information-dense and directly readable without opening links.",
             "Classify AI hardware, GPU, accelerator, server, HBM, packaging, foundry, EDA tools, semiconductor IP, chip design flows, verification, physical design, PDK/design rules, data-center, power, cooling, networking, and optical communication items as ai_hardware.",
-            "The example profile targets the EDA / semiconductor-IP industry. Raise importance for semiconductor EDA/IP, chip-design toolchain, layout-design protection, licensing, litigation, M&A, domestic substitution, and export-control items while preserving the same verification threshold.",
+            self._focus_rule(),
             "Use three report board semantics: AI technology/product application, AI infrastructure/hardware supply chain, and policy/industrial capital/macro/geopolitics.",
             "For important events, write 250-500 Chinese characters covering: who/what/when/where, key numbers or concrete details, background, why it matters, expected impact, and what to watch next.",
             "For ordinary events, write at least 120-220 Chinese characters unless the source itself is too thin.",

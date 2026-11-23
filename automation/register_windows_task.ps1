@@ -2,11 +2,19 @@ $ErrorActionPreference = "Stop"
 
 # Registers the weekday 09:00 task.
 #
-# The action runs automation\run_pipeline_daily.ps1 (local DeepSeek pipeline).
-# Re-running this script replaces the existing task in place.
+# $TaskName keeps its historical "CodexCLI" suffix on purpose: renaming would unregister
+# and recreate the task, and the name is the only place old notes and logs refer to it.
+# The action now runs the local DeepSeek pipeline (automation\run_pipeline_daily.ps1);
+# the Codex wrapper is kept on disk as a rollback path, not scheduled.
 
 $TaskName = "inforP-DailyWeekly"
-$Project = (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+# When the task loader runs this file as a ScriptBlock (the no-pwsh fallback), $PSScriptRoot
+# is empty. In that case the loader has already Set-Location'd to the project root.
+$Project = if ($PSScriptRoot) {
+    (Resolve-Path (Join-Path $PSScriptRoot "..")).Path
+} else {
+    (Get-Location).Path
+}
 $Script = Join-Path $Project "automation\run_pipeline_daily.ps1"
 $Pwsh = Get-Command pwsh -ErrorAction SilentlyContinue
 

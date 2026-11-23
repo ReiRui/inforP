@@ -41,8 +41,8 @@ class Delivery:
         raise NotImplementedError
 
 
-class CodexFileDelivery(Delivery):
-    channel = "codex_file"
+class LocalFileDelivery(Delivery):
+    channel = "local_file"
 
     def __init__(self, output_dir: Path):
         self.output_dir = output_dir
@@ -181,8 +181,8 @@ class EmailDelivery(Delivery):
 def build_deliveries(settings: Settings) -> list[Delivery]:
     deliveries: list[Delivery] = []
     for channel in settings.channel_list:
-        if channel == "codex_file":
-            deliveries.append(CodexFileDelivery(settings.report_output_dir))
+        if channel in {"local_file", "codex_file"}:  # codex_file kept as a legacy alias
+            deliveries.append(LocalFileDelivery(settings.report_output_dir))
         elif channel == "wecom":
             if settings.wecom_webhook_url:
                 deliveries.append(WeComDelivery(settings.wecom_webhook_url))
